@@ -1,0 +1,12 @@
+REST - a mapping between HTTP routes and CRUD
+
+INDEX               /dogs               GET             List all dogs
+NEW                 /dogs/new           GET             Show new dog form
+CREATE              /dogs               POST            Create a new dog, then redirect somewhere
+SHOW                /dogs/:id           GET             Show info about a dog
+EDIT                /dogs/:id/edit      GET             Show edit form for a dog
+UPDATE              /dogs/:id           PUT             Update info about a dog, then redirect somewhere
+DESTROY             /dogs/:id           Delete          Delete a dog, then redirect somewhere
+
+
+CRUD - Create, Read, Update, Delete
