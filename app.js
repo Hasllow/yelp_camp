@@ -1,16 +1,52 @@
-const Campground = require("./models/campground"),
+// ======================
+// REQUIRE'S
+// ======================
+const LocalStrategy = require("passport-local"),
+	Campground = require("./models/campground"),
 	Comment = require("./models/comment"),
 	bodyParser = require("body-parser"),
+	User = require("./models/user"),
+	passport = require("passport"),
 	mongoose = require("mongoose"),
 	express = require("express"),
 	seedDB = require("./seeds"),
 	app = express();
 
-mongoose.connect("mongodb://localhost:27017/yelp_camp", { useNewUrlParser: true, useUnifiedTopology: true,});
+// ======================
+// DB CONNECTION
+// ======================
+mongoose.connect("mongodb://localhost:27017/yelp_camp", {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+
+// ======================
+// APP Configuration
+// ======================
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 seedDB();
+
+// ======================
+// PASSPORT Configuration
+// ======================
+app.use(
+	require("express-session")({
+		secret: "Athena is my God",
+		resave: false,
+		saveUninitialized: false,
+	})
+);
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user;
+	next();
+});
 
 // Redirect to landing page
 app.get("/", (req, res) => {
@@ -54,31 +90,33 @@ app.get("/campgrounds/new", (req, res) => {
 
 // SHOW - Shows more info about a campground
 app.get("/campgrounds/:id", (req, res) => {
-	Campground.findById(req.params.id).populate("comments").exec((err, foundCampground) => {
-		if (err) {
-			console.log(err);
-		} else {
-			// Render showTemplate with that campground
-			res.render("campgrounds/show", { campground: foundCampground });
-		}
-	});
+	Campground.findById(req.params.id)
+		.populate("comments")
+		.exec((err, foundCampground) => {
+			if (err) {
+				console.log(err);
+			} else {
+				// Render showTemplate with that campground
+				res.render("campgrounds/show", { campground: foundCampground });
+			}
+		});
 });
 
 // ======================
 // COMMENTS ROUTES
 // ======================
 
-app.get("/campgrounds/:id/comments/new", (req, res) => {
+app.get("/campgrounds/:id/comments/new", isLoggedIn, (req, res) => {
 	Campground.findById(req.params.id, (err, foundCampground) => {
 		if (err) {
 			console.log(err);
 		} else {
-			res.render("comments/new", {campground: foundCampground});
+			res.render("comments/new", { campground: foundCampground });
 		}
-	});	
+	});
 });
 
-app.post("/campgrounds/:id/comments", (req, res) => {
+app.post("/campgrounds/:id/comments", isLoggedIn, (req, res) => {
 	// Lookup camgpround using ID
 	Campground.findById(req.params.id, (err, foundCampground) => {
 		if (err) {
@@ -96,9 +134,61 @@ app.post("/campgrounds/:id/comments", (req, res) => {
 					// Redirect campground show page
 					res.redirect("/campgrounds/" + foundCampground._id);
 				}
-			});	
+			});
 		}
-	});	
-})
+	});
+});
+
+// ======================
+// AUTH ROUTES
+// ======================
+
+// Show Register Form
+app.get("/register", (req, res) => {
+	res.render("register");
+});
+
+// Handle Register Logic
+app.post("/register", (req, res) => {
+	let newUser = new User({ username: req.body.username });
+	User.register(newUser, req.body.password, (err, user) => {
+		if (err) {
+			console.log(err);
+			return res.render("register");
+		}
+		passport.authenticate("local")(req, res, () => {
+			res.redirect("/campgrounds");
+		});
+	});
+});
+
+// Show Login Form
+app.get("/login", (req, res) => {
+	res.render("login");
+});
+
+// Handle Login Logic
+app.post(
+	"/login",
+	passport.authenticate("local", {
+		successRedirect: "/campgrounds",
+		failureRedirect: "/login",
+	}),
+	(req, res) => {}
+);
+
+// Handle Logout Logic
+app.get("/logout", (req, res) => {
+	req.logout();
+	res.redirect("/campgrounds");
+});
+
+// Middleware
+function isLoggedIn(req, res, next) {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect("/login");
+}
 
 app.listen(3000, () => console.log("The YelpCamp Server Has Started!"));
