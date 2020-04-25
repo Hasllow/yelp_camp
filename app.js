@@ -3,6 +3,7 @@
 // ======================
 const LocalStrategy = require("passport-local"),
 	Campground = require("./models/campground"),
+	methodOverride = require("method-override"),
 	Comment = require("./models/comment"),
 	bodyParser = require("body-parser"),
 	User = require("./models/user"),
@@ -25,6 +26,7 @@ const campgroundRoutes = require("./routes/campgrounds"),
 mongoose.connect("mongodb://localhost:27017/yelp_camp", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
+	useFindAndModify: false,
 });
 
 // ======================
@@ -33,6 +35,7 @@ mongoose.connect("mongodb://localhost:27017/yelp_camp", {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 // seedDB();
 
