@@ -1,9 +1,36 @@
-<%- include ("partials/header") %>
-
-<h1>Landing Page!</h1>
-
-<p>Welcome to YelpCamp!</p>
-
-<a href="/campgrounds">View All the Campgrounds!</a>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YelpCamp</title>
+        <link rel="stylesheet"href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/stylesheet/landing.css">
+    </head>
+    <body>
+    
+    <div class="container">
+        <% if(error && error.length > 0){ %>
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        <% } %>
+        <% if(success && success.length > 0){ %>
+            <div class="alert alert-success">
+                <%= success %>
+            </div>
+        <% } %>
+    </div>
+    
+    <div id="landing-header">
+ 		<h1>Welcome to YelpCamp!</h1>
+		<a href="/campgrounds" class="btn btn-lg btn-success">View All Campgrounds</a>
+    </div>
+    
+    <ul class="slideshow">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
 
 <%- include ("partials/footer") %>
