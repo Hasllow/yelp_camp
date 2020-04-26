@@ -9,6 +9,11 @@ middlewareObj.checkCampgroundOwnership = function (req, res, next) {
 				req.flash("error", "Campground not found!");
 				res.redirect("back");
 			} else {
+				// Check if campground found is not empty
+				if (!foundCampground) {
+                    req.flash("error", "Item not found.");
+                    return res.redirect("back");
+                }
 				// Check if user own the campground
 				if (foundCampground.author.id.equals(req.user._id)) {
 					next();
@@ -33,6 +38,11 @@ middlewareObj.checkCommentOwnership = function (req, res, next) {
 				req.flash("error", "Comment not found!");
 				res.redirect("back");
 			} else {
+				// Check if comment found is not empty
+				if (!foundcomment) {
+                    req.flash("error", "Item not found.");
+                    return res.redirect("back");
+                }
 				// Check if user own the comment
 				if (foundComment.author.id.equals(req.user._id)) {
 					next();

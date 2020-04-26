@@ -2,9 +2,7 @@
 // REQUIRE'S
 // ======================
 const LocalStrategy = require("passport-local"),
-	Campground = require("./models/campground"),
 	methodOverride = require("method-override"),
-	Comment = require("./models/comment"),
 	bodyParser = require("body-parser"),
 	flash = require("connect-flash"),
 	User = require("./models/user"),
@@ -62,6 +60,7 @@ app.use((req, res, next) => {
 	res.locals.error = req.flash("error");
 	next();
 });
+app.locals.moment = require("moment");
 
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);

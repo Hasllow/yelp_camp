@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
 		if (err) {
 			console.log(err);
 		} else {
-			res.render("campgrounds/index", { campgrounds: allCampgrounds });
+			res.render("campgrounds/index", { campgrounds: allCampgrounds, page: "campgrounds" });
 		}
 	});
 });
@@ -51,9 +51,7 @@ router.get("/new", middleware.isLoggedIn, (req, res) => {
 
 // SHOW - Shows more info about a campground
 router.get("/:id", (req, res) => {
-	Campground.findById(req.params.id)
-		.populate("comments")
-		.exec((err, foundCampground) => {
+	Campground.findById(req.params.id).populate("comments").exec((err, foundCampground) => {
 			if (err) {
 				console.log(err);
 			} else {

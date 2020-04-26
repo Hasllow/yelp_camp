@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
 
 // Show Register Form
 router.get("/register", (req, res) => {
-	res.render("register");
+	res.render("register", {page: "register"});
 });
 
 // Handle Register Logic
@@ -27,11 +27,11 @@ router.post("/register", (req, res) => {
 	let newUser = new User({ username: req.body.username });
 	User.register(newUser, req.body.password, (err, user) => {
 		if (err) {
-			req.flash("error", err.message);
-			return res.render("register");
+			req.flash();
+			return res.render("register", { "error": err.message });
 		}
 		passport.authenticate("local")(req, res, () => {
-			req.flash("success", "Welcome to YelpCamp " + user.username);
+			req.flash("success", "Successfully Signed Up! Nice to meet you " + req.body.username);
 			res.redirect("/campgrounds");
 		});
 	});
@@ -39,13 +39,11 @@ router.post("/register", (req, res) => {
 
 // Show Login Form
 router.get("/login", (req, res) => {
-	res.render("login");
+	res.render("login", {page: "login"});
 });
 
 // Handle Login Logic
-router.post(
-	"/login",
-	passport.authenticate("local", {
+router.post("/login", passport.authenticate("local", {
 		successRedirect: "/campgrounds",
 		failureRedirect: "/login",
 	}),
