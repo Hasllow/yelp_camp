@@ -6,7 +6,7 @@ const Campground = require("../models/campground"),
 
 // NEW - Comments
 router.get("/new", middleware.isLoggedIn, (req, res) => {
-	Campground.findById(req.params.id, (err, foundCampground) => {
+	Campground.findOne({slug: req.params.slug}, (err, foundCampground) => {
 		if (err) {
 			console.log(err);
 		} else {
@@ -18,7 +18,7 @@ router.get("/new", middleware.isLoggedIn, (req, res) => {
 // CREATE - Comments
 router.post("/", middleware.isLoggedIn, (req, res) => {
 	// Lookup camgpround using ID
-	Campground.findById(req.params.id, (err, foundCampground) => {
+	Campground.findOne({slug: req.params.slug}, (err, foundCampground) => {
 		if (err) {
 			console.log(err);
 			res.redirect("/campgrounds");
@@ -38,7 +38,7 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
 					foundCampground.save();
 					// Redirect campground show page
 					req.flash("success", "Successfully added a comment");
-					res.redirect("/campgrounds/" + foundCampground._id);
+					res.redirect("/campgrounds/" + foundCampground.slug);
 				}
 			});
 		}
@@ -53,7 +53,7 @@ router.get("/:comment_id/edit", middleware.checkCommentOwnership, (req, res) => 
 			res.redirect("back");
 		} else {
 			res.render("comments/edit", {
-				campground_id: req.params.id,
+				campground_slug: req.params.slug,
 				comment: foundComment,
 			});
 		}
@@ -68,7 +68,7 @@ router.put("/:comment_id", middleware.checkCommentOwnership, (req, res) => {
 			res.redirect("back");
 		} else {
 			req.flash("success", "Updated comment successfully!");
-			res.redirect("/campgrounds/" + req.params.id);
+			res.redirect("/campgrounds/" + req.params.slug);
 		}
 	});
 });
@@ -78,10 +78,10 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, (req, res) => {
 	Comment.findByIdAndDelete(req.params.comment_id, (err) => {
 		if (err) {
 			req.flash("error", "Something went wrong");
-			res.redirect("/campgrounds/" + req.params.id);
+			res.redirect("/campgrounds/" + req.params.slug);
 		} else {
 			req.flash("success", "Comment deleted");
-			res.redirect("/campgrounds/" + req.params.id);
+			res.redirect("/campgrounds/" + req.params.slug);
 		}
 	});
 });

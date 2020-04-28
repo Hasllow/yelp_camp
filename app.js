@@ -27,6 +27,7 @@ mongoose.connect("mongodb://localhost:27017/yelp_camp", {
 	useUnifiedTopology: true,
 	useFindAndModify: false,
 });
+mongoose.set('useCreateIndex', true);
 
 // ======================
 // APP Configuration
@@ -63,7 +64,7 @@ app.use((req, res, next) => {
 app.locals.moment = require("moment");
 
 app.use("/campgrounds", campgroundRoutes);
-app.use("/campgrounds/:id/comments", commentRoutes);
+app.use("/campgrounds/:slug/comments", commentRoutes);
 app.use("/", indexRoutes);
 
 app.listen(3000, () => console.log("The YelpCamp Server Has Started!"));

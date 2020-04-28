@@ -8,7 +8,7 @@
 	</div>
 
 	<div style="width: 30%; margin: 20px auto;">
-		<form action="/campgrounds/<%= campground._id %>/comments" method="post">
+		<form action="/campgrounds/<%= campground.slug %>/comments" method="post">
 			<div class="form-group">
 				<input class="form-control" type="text" name="comment[text]" placeholder="Review"/>
 			</div>
