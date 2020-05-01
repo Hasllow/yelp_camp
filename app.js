@@ -22,7 +22,7 @@ const campgroundRoutes = require("./routes/campgrounds"),
 // ======================
 // DB CONNECTION
 // ======================
-mongoose.connect("mongodb://localhost:27017/yelp_camp", {
+mongoose.connect("mongodb+srv://hasllow:y0dFzO2C28zAyDqk@hasllow-spkf7.gcp.mongodb.net/test?retryWrites=true&w=majority", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useFindAndModify: false,
