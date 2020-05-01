@@ -22,7 +22,8 @@ const campgroundRoutes = require("./routes/campgrounds"),
 // ======================
 // DB CONNECTION
 // ======================
-mongoose.connect("mongodb+srv://hasllow:y0dFzO2C28zAyDqk@hasllow-spkf7.gcp.mongodb.net/yelp_camp?retryWrites=true&w=majority", {
+console.log(process.env.DATABASEURL);
+mongoose.connect(process.env.DATABASEURL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useFindAndModify: false,
