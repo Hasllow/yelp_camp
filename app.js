@@ -22,7 +22,7 @@ const campgroundRoutes = require("./routes/campgrounds"),
 // ======================
 // DB CONNECTION
 // ======================
-mongoose.connect("mongodb+srv://hasllow:y0dFzO2C28zAyDqk@hasllow-spkf7.gcp.mongodb.net/test?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://hasllow:y0dFzO2C28zAyDqk@hasllow-spkf7.gcp.mongodb.net/yelp_camp?retryWrites=true&w=majority", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useFindAndModify: false,
@@ -67,4 +67,4 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:slug/comments", commentRoutes);
 app.use("/", indexRoutes);
 
-app.listen(3000, () => console.log("The YelpCamp Server Has Started!"));
+app.listen(process.env.PORT || 3000, () => console.log("The YelpCamp Server Has Started!"));
